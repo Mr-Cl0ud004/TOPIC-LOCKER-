@@ -1,0 +1,75 @@
+# TOPICLOCK V1.1
+
+A dark, installable, local-first syllabus research tracker. V1.1 is prepared for GitHub Pages and bundles its document-processing libraries at build time.
+
+## What changed in V1.1
+
+- GitHub Pages deployment workflow included (`.github/workflows/deploy.yml`).
+- Vite build with relative asset paths, so repository project pages work under `https://username.github.io/repository/`.
+- PDF.js, Mammoth and jsPDF are npm dependencies bundled into the build; no runtime CDN dependency for PDF/DOCX import or PDF export.
+- Automatic local recovery snapshots remain enabled.
+- Optional automatic JSON backup to a user-selected file on supported Chromium desktop browsers (File System Access API). Permission is requested by the browser; the app cannot write silently to arbitrary folders.
+- Import cannot replace an already active commitment. A backup containing an active topic can restore that same lock only when the current profile is unlocked and the backup's topic/session references validate.
+- App fails closed if the stored active-topic reference and topic/session records disagree. It does not silently clear a broken lock and offer a new draw.
+- Completion requires all four research checklist items.
+
+## Run locally
+
+Install Node.js 20 or newer, then:
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite (usually `http://localhost:5173`).
+
+Build production files:
+
+```bash
+npm run build
+npm run preview
+```
+
+The deployable site is generated in `dist/`.
+
+## Publish to GitHub Pages
+
+1. Create a GitHub repository (for example `topiclock`).
+2. Put the contents of this project in the repository root. Commit and push to the `main` branch.
+3. In GitHub, open **Settings → Pages**.
+4. Under **Build and deployment → Source**, select **GitHub Actions**.
+5. The included workflow installs dependencies, builds the app and deploys `dist/` whenever you push to `main`.
+6. Open the Pages URL shown in the workflow deployment summary.
+
+The Vite `base: './'` setting supports a repository subpath. Do not remove it unless you are deploying to a domain root and have adjusted the configuration intentionally.
+
+## PWA installation
+
+- Desktop Chrome/Edge: open the HTTPS Pages URL and use the install icon or Menu → Save and share → Install page as app.
+- Android Chrome: Menu → Install app / Add to Home screen.
+
+The service worker and manifest are in `public/` and copied to the production root by Vite.
+
+## Storage, backup and sync — important distinctions
+
+- The syllabus, active topic, notes, timer, completed topics, goals and statistics are stored in IndexedDB in the current browser profile.
+- Refreshing or reopening the same browser profile on the same device restores the state.
+- A GitHub Pages deployment does **not** create a user database or sync data between devices. Browser data on your laptop is separate from browser data on your phone.
+- Local recovery snapshots are automatic but are on the same device/profile. They do not protect against device loss or browser data clearing.
+- For automatic off-browser backup on supported desktop Chromium browsers, open Settings → Enable file auto-backup and select a JSON file. The browser controls permission and may ask again later. This feature is not supported by every browser, especially some mobile browsers. Manual JSON export/import is always available.
+- Keep manual backup copies somewhere separate (external drive/cloud storage). To move to another device, export JSON on the first device and import it on the second.
+
+## Lock guarantee and security boundary
+
+The app enforces one active topic in its normal interface. It persists the active topic before navigating to the workspace; refresh/reopen restores it; shuffle is blocked until completion; imports cannot overwrite a currently active commitment; and inconsistent lock records fail closed.
+
+However, **a frontend-only static website cannot make a local browser record tamper-proof**. A person with full access to their browser can clear site data or edit IndexedDB with developer tools. GitHub Pages cannot enforce a server-side lock because it has no application server or authenticated database. If you need a lock that survives data clearing, cross-device sync, multi-user accounts, or server-enforced audit records, the next step is a backend (for example Supabase with row-level security and server-side transition rules). Do not describe the static version as cryptographically irreversible.
+
+## Syllabus import
+
+PDF, DOCX, TXT and Markdown import are supported. The text extraction creates candidate lines; it does not semantically understand the syllabus. Review the extracted topic list before importing. PDF/DOCX libraries are bundled into the production build, so the app does not fetch them from a third-party CDN at runtime.
+
+## Repository hygiene
+
+Do not commit `node_modules/` or `dist/`. `.gitignore` excludes them. Commit `package.json` and the `package-lock.json` generated by running `npm install` locally so deployments use reproducible dependency versions. The included workflow currently uses `npm install`, so it can also bootstrap the first deployment before a lockfile has been committed.

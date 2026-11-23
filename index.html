@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1020"><meta name="description" content="TOPICLOCK — a locked, syllabus-driven research tracker">
+  <link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <title>TOPICLOCK — Research tracker</title><link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">T</div><div><b>TOPICLOCK</b><small>Research discipline system</small></div></div>
+      <nav id="nav">
+        <button class="nav-item active" data-page="overview">▦ <span>Overview</span></button>
+        <button class="nav-item" data-page="workspace">◷ <span>Research workspace</span></button>
+        <button class="nav-item" data-page="syllabus">▤ <span>Syllabus manager</span></button>
+        <button class="nav-item" data-page="history">☷ <span>Research history</span></button>
+        <button class="nav-item" data-page="analytics">▥ <span>Analytics</span></button>
+        <button class="nav-item" data-page="settings">⚙ <span>Backup & settings</span></button>
+      </nav>
+      <div class="sidebar-bottom"><span class="status-dot"></span> Local-first · Offline ready<small>Your data stays in this browser</small></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div><div class="eyebrow" id="eyebrow">YOUR STUDY SYSTEM</div><h1 id="page-title">Overview</h1></div><div class="top-actions"><span id="today-label"></span><button class="icon-btn" id="backup-now" title="Export backup">⇩</button></div></header>
+      <div id="app-content"><div class="loading">Loading your workspace…</div></div>
+      <footer>TOPICLOCK V1 <span>·</span> One topic. One commitment. Finish it.</footer>
+    </main>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="modal"><form method="dialog" class="modal-card"><button class="modal-close" aria-label="Close">×</button><div id="modal-content"></div></form></dialog>
+  <script type="module" src="./app.js"></script>
+</body></html>
